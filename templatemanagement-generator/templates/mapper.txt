@@ -1,0 +1,12 @@
+package {{entity.mapperPackage}};
+
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.context.annotation.Primary;
+
+import {{entity.mapperGenPackage}}.{{entity.mapperGenClass}};
+
+@Mapper
+@Primary
+public interface {{entity.mapperClass}} extends {{entity.mapperGenClass}} {
+
+}

@@ -1,0 +1,106 @@
+{% import "templates/macros.txt" %}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="{{entity.mapperGenPackage}}.{{entity.mapperGenClass}}">
+
+    <resultMap id="BaseResultMap" type="{{entity.javaPackage}}.{{entity.javaClass}}">
+{% for property in entity.properties %}
+        <result column="{{property.columnName}}" property="{{property.propertyName}}" />
+{% endfor %}
+    </resultMap>
+
+    <sql id="baseColumns">
+        {% for property in entity.properties %}{{property.columnName}}{{loop.index == loop.length - 1 ? '' : ','}} {% endfor %} 
+    </sql>
+
+    <select id="selectOne" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumns" />
+        from {{entity.domain}}.{{entity.tableName}} 
+        where
+{% for key in entity.keys %}
+            {{loop.index == 0 ? '' : 'AND '}}{{key.columnName}} = {{"#{"}}{{key.propertyName}}} 
+{% endfor %}
+    </select>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumns" /> 
+        from {{entity.domain}}.{{entity.tableName}} 
+        where
+            1 = 1
+{% for key in entity.keys %}
+{% if key.isParentKey %}            AND {{key.columnName}} = {{"#{"}}{{key.propertyName}}}{% endif %} 
+{% endfor %}
+        <if test="limit != null and offset != null">
+            limit #{offset}, #{limit}
+        </if>
+        <if test="limit != null and offset == null">
+            limit #{limit}
+        </if>
+    </select>
+
+    <delete id="delete">
+        delete from {{entity.domain}}.{{entity.tableName}} 
+        where
+{% for key in entity.keys %}
+            {{loop.index == 0 ? '' : 'AND'}}{{key.columnName}} = {{"#{"}}{{key.propertyName}}} 
+{% endfor %}
+    </delete>
+  
+    <insert id="insert" parameterType="{{entity.javaPackage}}.{{entity.javaClass}}">
+        insert into {{entity.domain}}.{{entity.tableName}} (
+{% for property in entity.properties %}
+            {{property.columnName}}{{loop.index == loop.length - 1 ? '' : ','}} 
+{% endfor %}
+        ) values (
+{% for property in entity.properties %}
+            {{"#{record."}}{{property.propertyName}}}{{loop.index == loop.length - 1 ? '' : ','}} 
+{% endfor %}
+        )
+    </insert>
+
+    <update id="update" parameterType="{{entity.javaPackage}}.{{entity.javaClass}}">
+        update {{entity.domain}}.{{entity.tableName}} 
+        <set>
+{% for property in entity.properties %}
+            {{property.columnName}} = {{"#{record."}}{{property.propertyName}}}{{loop.index == loop.length - 1 ? '' : ','}} 
+{% endfor %}
+        </set>
+        where
+{% for key in entity.keys %}
+            {{loop.index == 0 ? '' : 'AND'}} {{key.columnName}} = {{"#{record."}}{{key.propertyName}}} 
+{% endfor %}
+    </update>
+    
+    <update id="updateSelective" parameterType="{{entity.javaPackage}}.{{entity.javaClass}}">
+        update {{entity.domain}}.{{entity.tableName}} 
+        <set>
+{% for property in entity.properties %}
+            <if test="record.{{property.propertyName}} != null">{{property.columnName}} = {{"#{record."}}{{property.propertyName}}}{{loop.index == loop.length - 1 ? '' : ','}}</if>
+{% endfor %}
+        </set>
+        where
+{% for key in entity.keys %}
+            {{loop.index == 0 ? '' : 'AND'}} {{key.columnName}} = {{"#{"}}record.{{key.propertyName}}} 
+{% endfor %}
+    </update>
+
+{% for key in entity.keys %}
+    <select id="generate{{key.propertyName | capitalize}}" resultType="int">
+        select ifnull(max({{key.columnName}}) + 1,1) from {{entity.domain}}.{{entity.tableName}} 
+{{ keyFieldsForGenerateKey(entity, key) }}
+    </select>
+
+{% endfor %}
+
+</mapper>
+{##}
+{% macro keyFieldsForGenerateKey(entity, key) %}
+{% for keyParam in entity.keys %}
+{% if key["`Integer.decode(keyId)`"] > keyParam["`Integer.decode(keyId)`"] %}
+        {{loop.index == 0 ? 'where' : '' }} 
+            {{keyParam.columnName}} = {{"#{"}}{{keyParam.propertyName}}}{{key["`Integer.decode(keyId)`"] > keyParam["`Integer.decode(keyId)`"] - 1 ? '' : ' AND '}} 
+{% endif %}
+{% endfor %}
+{% endmacro %}

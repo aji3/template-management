@@ -1,0 +1,6 @@
+Hello {{ p.name }} 
+Do you live in {{a.street}}?
+{{test}} 
+{{num + num}} 
+{{stats.gdp}} 
+

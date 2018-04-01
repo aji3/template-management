@@ -1,0 +1,32 @@
+{% import "templates/macros.txt" %}
+{% autoescape false %}
+package {{entity.mapperGenPackage}};
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import {{entity.javaPackage}}.{{entity.javaClass}};
+
+@Mapper
+public interface {{entity.mapperGenClass}} {
+
+    {{entity.javaClass}} selectOne({{ keyFields(entity, true, false, false, true) }});
+
+    List<{{entity.javaClass}}> selectList({{parentKeyFields(entity, true, false, false, true)}}{{entity.parentKeys.size > 0 ? ', ' : ''}}@Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    void insert(@Param("record") {{entity.javaClass}} record);
+
+    void update(@Param("record") {{entity.javaClass}} record);
+
+    void updateSelective(@Param("record") {{entity.javaClass}} record);
+
+    void delete({{ keyFields(entity, true, false, false, true) }});
+
+{% for key in entity.keys %}
+    {{key.type}} generate{{key.propertyName | capitalize}}({{keyFieldsForGenerateKey(entity, key, true, false)}});
+
+{% endfor %}
+}
+{% endautoescape %}
