@@ -28,13 +28,20 @@ public class BaseExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({ MethodArgumentTypeMismatchException.class, IllegalArgumentException.class,
-            MethodArgumentNotValidException.class })
+    @ExceptionHandler({
+            ApplicationException.class,
+            MethodArgumentTypeMismatchException.class,
+            IllegalArgumentException.class,
+            MethodArgumentNotValidException.class, })
     @ResponseBody
     public Map<String, Object> handleValidationError(Exception e) {
         ErrorMessageBuilder builder = new ErrorMessageBuilder();
-        builder.message("Invalid Request");
-        if (e instanceof MethodArgumentTypeMismatchException) {
+        if (e instanceof ApplicationException) {
+            ApplicationException appExp = (ApplicationException) e;
+            builder.message(e.getMessage());
+            builder.error(appExp.getField(), ErrorCause.FORMAT_EXCEPTION, appExp.getDetail());
+        } else if (e instanceof MethodArgumentTypeMismatchException) {
+            builder.message("Invalid Request");
             MethodArgumentTypeMismatchException exp = (MethodArgumentTypeMismatchException) e;
             if (exp.getCause() instanceof NumberFormatException) {
                 builder.error(exp.getName(), ErrorCause.FORMAT_EXCEPTION, exp.getMessage());
@@ -42,6 +49,7 @@ public class BaseExceptionHandler {
                 builder.error(exp.getName(), ErrorCause.UNKNOWN, exp.getMessage());
             }
         } else if (e instanceof MethodArgumentNotValidException) {
+            builder.message("Invalid Request");
             MethodArgumentNotValidException exp = (MethodArgumentNotValidException) e;
             exp.getBindingResult().getAllErrors().forEach(elem -> {
                 if (elem instanceof FieldError) {

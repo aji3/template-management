@@ -16,13 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.xlbean.xlapi.api.exception.ApplicationException;
+import org.xlbean.xlapi.api.exception.SystemException;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.loader.DelegatingLoader;
 import com.mitchellbosecke.pebble.loader.Loader;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import com.templengine.templatemanagement.api.dto.ExecuteTemplateEngineByContentRequest;
 import com.templengine.templatemanagement.dao.TemplateDao;
 import com.templengine.templatemanagement.engine.PebbleStringLoader;
 import com.templengine.templatemanagement.entity.Template;
@@ -73,9 +78,11 @@ public class TemplateApi {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(jsonStr, HashMap.class);
-        } catch (IOException e) {
+        } catch (JsonParseException | JsonMappingException e) {
             // JSON Format error
-            throw new RuntimeException(e);
+            throw new ApplicationException("Invalid Json Format", "jsonStr", e.getMessage());
+        } catch (IOException e) {
+            throw new SystemException("Unknown Exception");
         }
     }
 

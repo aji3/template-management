@@ -1,4 +1,4 @@
-package com.templengine.templatemanagement.api;
+package com.templengine.templatemanagement;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

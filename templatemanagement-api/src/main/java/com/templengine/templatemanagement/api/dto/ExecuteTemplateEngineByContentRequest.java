@@ -1,4 +1,4 @@
-package com.templengine.templatemanagement.api;
+package com.templengine.templatemanagement.api.dto;
 
 import lombok.Data;
 

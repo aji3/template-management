@@ -2,6 +2,8 @@ package com.templengine.templatemanagement.api;
 
 import org.junit.Test;
 
+import com.templengine.templatemanagement.api.dto.ExecuteTemplateEngineByContentRequest;
+
 public class TemplateApiTest extends TemplateApi {
 
     @Test
