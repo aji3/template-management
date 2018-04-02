@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.templengine.templatemanagement.dao.mapper.gen.TemplateMapperGen">
+
+    <resultMap id="BaseResultMap" type="com.templengine.templatemanagement.entity.Template">
+        <result column="templateId" property="templateId" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="path" property="path" />
+        <result column="content" property="content" />
+        <result column="contentType" property="contentType" />
+        <result column="sampleDataJsonStr" property="sampleDataJsonStr" />
+        <result column="createdTimestamp" property="createdTimestamp" />
+        <result column="createdBy" property="createdBy" />
+        <result column="updatedTimestamp" property="updatedTimestamp" />
+        <result column="updatedBy" property="updatedBy" />
+    </resultMap>
+
+    <sql id="baseColumns">
+        templateId, name, description, path, content, contentType, sampleDataJsonStr, createdTimestamp, createdBy, updatedTimestamp, updatedBy  
+    </sql>
+
+    <select id="selectOne" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumns" />
+        from TemplateManagement.Template 
+        where
+            templateId = #{templateId} 
+    </select>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumns" /> 
+        from TemplateManagement.Template 
+        where
+            1 = 1
+ 
+        <if test="limit != null and offset != null">
+            limit #{offset}, #{limit}
+        </if>
+        <if test="limit != null and offset == null">
+            limit #{limit}
+        </if>
+    </select>
+
+    <delete id="delete">
+        delete from TemplateManagement.Template 
+        where
+            templateId = #{templateId} 
+    </delete>
+  
+    <insert id="insert" parameterType="com.templengine.templatemanagement.entity.Template">
+        insert into TemplateManagement.Template (
+            templateId, 
+            name, 
+            description, 
+            path, 
+            content, 
+            contentType, 
+            sampleDataJsonStr, 
+            createdTimestamp, 
+            createdBy, 
+            updatedTimestamp, 
+            updatedBy 
+        ) values (
+            #{record.templateId}, 
+            #{record.name}, 
+            #{record.description}, 
+            #{record.path}, 
+            #{record.content}, 
+            #{record.contentType}, 
+            #{record.sampleDataJsonStr}, 
+            #{record.createdTimestamp}, 
+            #{record.createdBy}, 
+            #{record.updatedTimestamp}, 
+            #{record.updatedBy} 
+        )
+    </insert>
+
+    <update id="update" parameterType="com.templengine.templatemanagement.entity.Template">
+        update TemplateManagement.Template 
+        <set>
+            templateId = #{record.templateId}, 
+            name = #{record.name}, 
+            description = #{record.description}, 
+            path = #{record.path}, 
+            content = #{record.content}, 
+            contentType = #{record.contentType}, 
+            sampleDataJsonStr = #{record.sampleDataJsonStr}, 
+            createdTimestamp = #{record.createdTimestamp}, 
+            createdBy = #{record.createdBy}, 
+            updatedTimestamp = #{record.updatedTimestamp}, 
+            updatedBy = #{record.updatedBy} 
+        </set>
+        where
+             templateId = #{record.templateId} 
+    </update>
+    
+    <update id="updateSelective" parameterType="com.templengine.templatemanagement.entity.Template">
+        update TemplateManagement.Template 
+        <set>
+            <if test="record.templateId != null">templateId = #{record.templateId},</if>
+            <if test="record.name != null">name = #{record.name},</if>
+            <if test="record.description != null">description = #{record.description},</if>
+            <if test="record.path != null">path = #{record.path},</if>
+            <if test="record.content != null">content = #{record.content},</if>
+            <if test="record.contentType != null">contentType = #{record.contentType},</if>
+            <if test="record.sampleDataJsonStr != null">sampleDataJsonStr = #{record.sampleDataJsonStr},</if>
+            <if test="record.createdTimestamp != null">createdTimestamp = #{record.createdTimestamp},</if>
+            <if test="record.createdBy != null">createdBy = #{record.createdBy},</if>
+            <if test="record.updatedTimestamp != null">updatedTimestamp = #{record.updatedTimestamp},</if>
+            <if test="record.updatedBy != null">updatedBy = #{record.updatedBy}</if>
+        </set>
+        where
+             templateId = #{record.templateId} 
+    </update>
+
+    <select id="generateTemplateId" resultType="int">
+        select ifnull(max(templateId) + 1,1) from TemplateManagement.Template 
+    </select>
+
+
+</mapper>

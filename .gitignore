@@ -23,7 +23,6 @@ RemoteSystemsTempFiles
 
 # Generated
 dest
-generated
 
 # Other
 *.log

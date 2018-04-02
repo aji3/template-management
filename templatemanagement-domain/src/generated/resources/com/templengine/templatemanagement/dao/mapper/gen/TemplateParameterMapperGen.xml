@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.templengine.templatemanagement.dao.mapper.gen.TemplateParameterMapperGen">
+
+    <resultMap id="BaseResultMap" type="com.templengine.templatemanagement.entity.TemplateParameter">
+        <result column="templateId" property="templateId" />
+        <result column="parameterId" property="parameterId" />
+        <result column="parameterName" property="parameterName" />
+        <result column="createdTimestamp" property="createdTimestamp" />
+        <result column="createdBy" property="createdBy" />
+        <result column="updatedTimestamp" property="updatedTimestamp" />
+        <result column="updatedBy" property="updatedBy" />
+    </resultMap>
+
+    <sql id="baseColumns">
+        templateId, parameterId, parameterName, createdTimestamp, createdBy, updatedTimestamp, updatedBy  
+    </sql>
+
+    <select id="selectOne" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumns" />
+        from TemplateManagement.TemplateParameter 
+        where
+            templateId = #{templateId} 
+            AND parameterId = #{parameterId} 
+    </select>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumns" /> 
+        from TemplateManagement.TemplateParameter 
+        where
+            1 = 1
+            AND templateId = #{templateId} 
+ 
+        <if test="limit != null and offset != null">
+            limit #{offset}, #{limit}
+        </if>
+        <if test="limit != null and offset == null">
+            limit #{limit}
+        </if>
+    </select>
+
+    <delete id="delete">
+        delete from TemplateManagement.TemplateParameter 
+        where
+            templateId = #{templateId} 
+            ANDparameterId = #{parameterId} 
+    </delete>
+  
+    <insert id="insert" parameterType="com.templengine.templatemanagement.entity.TemplateParameter">
+        insert into TemplateManagement.TemplateParameter (
+            templateId, 
+            parameterId, 
+            parameterName, 
+            createdTimestamp, 
+            createdBy, 
+            updatedTimestamp, 
+            updatedBy 
+        ) values (
+            #{record.templateId}, 
+            #{record.parameterId}, 
+            #{record.parameterName}, 
+            #{record.createdTimestamp}, 
+            #{record.createdBy}, 
+            #{record.updatedTimestamp}, 
+            #{record.updatedBy} 
+        )
+    </insert>
+
+    <update id="update" parameterType="com.templengine.templatemanagement.entity.TemplateParameter">
+        update TemplateManagement.TemplateParameter 
+        <set>
+            templateId = #{record.templateId}, 
+            parameterId = #{record.parameterId}, 
+            parameterName = #{record.parameterName}, 
+            createdTimestamp = #{record.createdTimestamp}, 
+            createdBy = #{record.createdBy}, 
+            updatedTimestamp = #{record.updatedTimestamp}, 
+            updatedBy = #{record.updatedBy} 
+        </set>
+        where
+             templateId = #{record.templateId} 
+            AND parameterId = #{record.parameterId} 
+    </update>
+    
+    <update id="updateSelective" parameterType="com.templengine.templatemanagement.entity.TemplateParameter">
+        update TemplateManagement.TemplateParameter 
+        <set>
+            <if test="record.templateId != null">templateId = #{record.templateId},</if>
+            <if test="record.parameterId != null">parameterId = #{record.parameterId},</if>
+            <if test="record.parameterName != null">parameterName = #{record.parameterName},</if>
+            <if test="record.createdTimestamp != null">createdTimestamp = #{record.createdTimestamp},</if>
+            <if test="record.createdBy != null">createdBy = #{record.createdBy},</if>
+            <if test="record.updatedTimestamp != null">updatedTimestamp = #{record.updatedTimestamp},</if>
+            <if test="record.updatedBy != null">updatedBy = #{record.updatedBy}</if>
+        </set>
+        where
+             templateId = #{record.templateId} 
+            AND parameterId = #{record.parameterId} 
+    </update>
+
+    <select id="generateTemplateId" resultType="int">
+        select ifnull(max(templateId) + 1,1) from TemplateManagement.TemplateParameter 
+    </select>
+
+    <select id="generateParameterId" resultType="int">
+        select ifnull(max(parameterId) + 1,1) from TemplateManagement.TemplateParameter 
+        where 
+            templateId = #{templateId} 
+    </select>
+
+
+</mapper>
