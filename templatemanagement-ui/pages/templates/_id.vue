@@ -121,6 +121,10 @@ export default {
           this.renderContent()
           this.addMessage({ message: 'Template Updated', color: 'info', timeout: 5000 })
         })
+        .catch((error) => {
+          console.log(error.response.data.errors[0].detail)
+          this.addMessageWithDialog({ ...error.response.data, color: 'error', timeout: 5000, dialogMessage: error.response.data.errors[0].detail })
+        })
     },
     renderContent: function () {
       let content = this.htmlContents
@@ -129,7 +133,7 @@ export default {
       }
       document.getElementById('result').innerHTML = content
     },
-    ...mapMutations(['addMessage'])
+    ...mapMutations(['addMessage', 'addMessageWithDialog'])
   },
   data () {
     return {

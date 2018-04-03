@@ -27,13 +27,18 @@
             Message
           </v-btn>
           <v-alert v-for="message in messages" :key="message.timestamp" value="true" @input="removeMessage(message)" :color="message.color" dismissible>
-            {{ message.message }}
+            {{ message.message }} <v-btn v-if="message.dialogMessage" outline @click="showDialog(message)">Detail Message</v-btn>
           </v-alert>
         </v-bottom-sheet>
         <v-snackbar :timeout="timeout" :color="color" v-model="snackbar">
           {{ snackbarMessage.message }}
           <v-btn dark flat @click.native="disableSnackbar()">Close</v-btn>
         </v-snackbar>
+        <v-dialog v-model="dialog" max-width="1200px">
+          <v-card>
+            <pre>{{dialogMessage}}</pre>
+          </v-card>
+        </v-dialog>
       </v-container>
     </v-content>
   </v-app>
@@ -68,10 +73,15 @@ export default {
         return ''
       }
     },
-    messages () { return this.$store.state.messages }
+    messages () { return this.$store.state.messages },
+    dialog: {
+      get () { return this.$store.state.dialog },
+      set (val) { this.disableDialog() }
+    },
+    dialogMessage () { return this.$store.state.dialogMessage }
   },
   methods: {
-    ...mapMutations(['disableSnackbar', 'removeMessage'])
+    ...mapMutations(['disableSnackbar', 'disableDialog', 'showDialog', 'removeMessage'])
   }
 }
 </script>

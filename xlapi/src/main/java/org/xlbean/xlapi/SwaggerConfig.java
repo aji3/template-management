@@ -24,7 +24,7 @@ public class SwaggerConfig {
     public Docket swaggerSpringMvcPlugin() {
         return new Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis(RequestHandlerSelectors.basePackage("org.xlbean.templatemanagement"))
+            .apis(RequestHandlerSelectors.basePackage("com.templengine.templatemanagement.api"))
             .paths(paths())
             .build()
             .apiInfo(apiInfo());
