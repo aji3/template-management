@@ -68,8 +68,10 @@ public class TemplateApi {
             PebbleTemplate pebbleTemplate = engine.getTemplate(templatePath);
             pebbleTemplate.evaluate(writer, data);
             return writer.toString();
-        } catch (PebbleException | IOException e) {
-            throw new RuntimeException(e);
+        } catch (PebbleException e) {
+            throw new ApplicationException("FORMAT_ERROR", "templateContents", e.getMessage());
+        } catch (IOException e) {
+            throw new SystemException("System Error");
         }
     }
 
